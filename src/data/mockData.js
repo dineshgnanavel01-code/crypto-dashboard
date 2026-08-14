@@ -1,21 +1,18 @@
 /**
- * VOLTEX — data/cryptoData.js
- * Data layer: live CoinGecko public API (no key required), graceful fallback
- * to static mock data when rate-limited, plus a tick simulator that adds
- * realistic second-by-second price movement with flash notifications.
+ * Dinoc Currency — data/mockData.js
+ * Static mock data layer (per assignment spec: no backend / real API required).
+ * Provides market data, holdings, transactions, and order-book generators,
+ * plus a tick simulator that makes prices increase/decrease live in the
+ * front end every 1.5 seconds with green/red flash indicators.
  *
- * Style: Midnight Precision Deck — data is the hero, color encodes direction.
+ * React hooks used: useState, useRef, useEffect, useCallback, useMemo
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-// How often the front end re-fetches real prices (ms). The public CoinGecko
-// endpoint is rate-limited (~10-30 req/min), so 60s is safe; micro-ticks
-// below fill the gaps with smooth simulated movement.
-const POLL_MS = 60000;
-
-// Speed of the simulated live ticker between API polls (ms).
+// Speed of the simulated live ticker (ms). Prices move every 1.5s.
 const TICK_MS = 1500;
 
+/** Static coin registry (sample cryptocurrencies from the spec). */
 export const COINS = [
   {
     id: "bitcoin",
@@ -75,7 +72,7 @@ export const COINS = [
   },
 ];
 
-/** Fallback mock market snapshot used when the API is unavailable. */
+/** Static mock market snapshot — sample data, no API. */
 export const MOCK_MARKET = [
   { id: "bitcoin", symbol: "BTC", name: "Bitcoin", current_price: 64218.44, price_change_percentage_24h: 2.36, market_cap: 1268440000000, total_volume: 31420000000 },
   { id: "ethereum", symbol: "ETH", name: "Ethereum", current_price: 3452.18, price_change_percentage_24h: 1.84, market_cap: 414920000000, total_volume: 18340000000 },
@@ -106,14 +103,16 @@ export const MOCK_TRANSACTIONS = [
   { id: "TX-8A21F8", symbol: "BTC", type: "SELL", amount: 0.02, price: 64102.88, status: "failed", time: "2026-08-12 22:14" },
 ];
 
-/** Static mock price history (hourly close, last 24 points) when chart API fails. */
+/** Static mock price history (daily close, last 30 points) — sample data. */
 export const MOCK_HISTORY = (() => {
   const pts = [];
   let p = 61200;
-  const seed = [1.02, -0.8, 1.4, -1.2, 2.1, -0.4, 0.9, 1.6, -2.0, 0.6, 1.8, -0.7, 1.1, -1.5, 2.4, -0.3, 0.8, 1.2, -1.8, 1.5, 0.4, -0.9, 1.9, -0.5];
+  const now = Date.now();
+  const day = 86400000;
+  const seed = [1.02, -0.8, 1.4, -1.2, 2.1, -0.4, 0.9, 1.6, -2.0, 0.6, 1.8, -0.7, 1.1, -1.5, 2.4, -0.3, 0.8, 1.2, -1.8, 1.5, 0.4, -0.9, 1.9, -0.5, 1.3, -1.1, 0.7, -1.6, 2.2, -0.6];
   for (let i = 0; i < seed.length; i++) {
     p += seed[i] * 90;
-    pts.push({ time: i, close: p });
+    pts.push({ time: now - (seed.length - i) * day, close: p });
   }
   return pts;
 })();
@@ -153,40 +152,24 @@ export function formatPct(p) {
   return `${p >= 0 ? "+" : ""}${p.toFixed(2)}%`;
 }
 
-/** Fetch live market data from CoinGecko public API. */
-export async function fetchLiveMarket(ids) {
-  const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids.join(",")}&order=market_cap_desc&sparkline=false&price_change_percentage=24h`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`CoinGecko HTTP ${res.status}`);
-  const data = await res.json();
-  return data.map((c) => ({
-    id: c.id,
-    symbol: c.symbol.toUpperCase(),
-    name: c.name,
-    current_price: c.current_price,
-    price_change_percentage_24h: c.price_change_percentage_24h ?? 0,
-    market_cap: c.market_cap,
-    total_volume: c.total_volume,
-  }));
-}
-
-/** Fetch price history (candles) for the chart, in daily granularity. */
-export async function fetchHistory(id, days = 30) {
-  const url = `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=${days}&interval=daily`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`CoinGecko HTTP ${res.status}`);
-  const data = await res.json();
-  return data.prices.map((p) => ({ time: p[0], close: p[1] }));
-}
-
+/**
+ * useMarketData — front-end-only hook.
+ * Starts from static mock data and simulates live price movement (±0.08%
+ * random walk every 1.5s) with up/down flash notifications. No API calls.
+ */
 export function useMarketData() {
-  const [market, setMarket] = useState(null); // array | null
-  const [live, setLive] = useState(false); // true when fed by real API
+  const [market, setMarket] = useState(MOCK_MARKET);
   const [loading, setLoading] = useState(true);
   const [flashes, setFlashes] = useState({}); // { [symbol]: 'up'|'down' }
-  const baseRef = useRef(null);
-  const marketRef = useRef(null);
+  const baseRef = useRef(MOCK_MARKET);
+  const marketRef = useRef(MOCK_MARKET);
   marketRef.current = market;
+
+  // Mark initial load as complete
+  useEffect(() => {
+    const t = window.setTimeout(() => setLoading(false), 300);
+    return () => window.clearTimeout(t);
+  }, []);
 
   const applyFlashes = useCallback((prev, next) => {
     const f = {};
@@ -202,61 +185,13 @@ export function useMarketData() {
     }
   }, []);
 
-  // Initial load (retry once if rate-limited)
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      let data = null;
-      try {
-        data = await fetchLiveMarket(COINS.map((c) => c.id));
-      } catch (e) {
-        try {
-          await new Promise((r) => setTimeout(r, 2000));
-          data = await fetchLiveMarket(COINS.map((c) => c.id));
-        } catch {
-          data = null;
-        }
-      }
-      if (cancelled) return;
-      if (data) {
-        baseRef.current = data;
-        setMarket(data);
-        setLive(true);
-      } else {
-        baseRef.current = MOCK_MARKET;
-        setMarket(MOCK_MARKET);
-        setLive(false);
-      }
-      setLoading(false);
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  // Poll for fresh prices
-  useEffect(() => {
-    if (!live) return;
-    const t = window.setInterval(async () => {
-      try {
-        const data = await fetchLiveMarket(COINS.map((c) => c.id));
-        applyFlashes(marketRef.current ?? [], data);
-        baseRef.current = data;
-        setMarket(data);
-      } catch {
-        // keep last known prices; API busy
-      }
-    }, POLL_MS);
-    return () => window.clearInterval(t);
-  }, [live, applyFlashes]);
-
-  // Micro-tick simulation between polls for a living tape
+  // Simulated live ticker: prices increase/decrease every TICK_MS
   useEffect(() => {
     const t = window.setInterval(() => {
       const base = baseRef.current;
       if (!base) return;
       const next = base.map((c) => {
-        // ±0.08% random walk
+        // ±0.08% random walk around the current price
         const drift = (Math.random() - 0.5) * 0.0016;
         const decimals = c.current_price < 1 ? 6 : 2;
         return { ...c, current_price: +(c.current_price * (1 + drift)).toFixed(decimals) };
@@ -274,5 +209,5 @@ export function useMarketData() {
     return m;
   }, [market]);
 
-  return { market, bySymbol, live, loading, flashes };
+  return { market, bySymbol, live: true, loading, flashes };
 }

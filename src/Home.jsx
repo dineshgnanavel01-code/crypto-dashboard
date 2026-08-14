@@ -24,7 +24,7 @@ export default function Home() {
   const [depositOpen, setDepositOpen] = useState(false);
   const [usdtBalance, setUsdtBalance] = useState(12500);
 
-  // Live market mood: average 24h change across all tracked coins (real API data)
+  // Market mood: average 24h change across all tracked coins (static sample data)
   const avgChange = useMemo(() => {
     if (!market || market.length === 0) return null;
     return market.reduce((sum, c) => sum + (c.price_change_percentage_24h ?? 0), 0) / market.length;
@@ -65,10 +65,10 @@ export default function Home() {
           <span className="flex items-center gap-1.5 text-xs">
             <span className={`h-1.5 w-1.5 rounded-full ${live ? "bg-up" : "bg-muted-foreground"}`} />
             <span className={live ? "up-text" : "text-muted-foreground"}>
-              {loading ? "Connecting to market data…" : live ? "Live market data · CoinGecko" : "Demo mode · offline feed"}
+              {loading ? "Loading market data…" : "Live simulated prices · front end only"}
             </span>
           </span>
-          {avgChange !== null && !loading && live && (
+          {avgChange !== null && !loading && (
             <span className={`flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-mono font-medium ${avgChange >= 0 ? "bg-up/10 up-text" : "bg-down/10 down-text"}`}>
               {avgChange >= 0 ? "▲" : "▼"} {avgChange.toFixed(2)}% avg 24h — {avgChange >= 0 ? "green market day" : "red market day"}
             </span>
@@ -120,7 +120,7 @@ export default function Home() {
         </div>
 
         <footer className="mt-10 border-t border-border pt-4 pb-8 text-center text-[11px] text-muted-foreground">
-          Dinoc Currency · Market data via CoinGecko public API · Prices refresh every 15s with live micro-ticks ·
+          Dinoc Currency · Sample data · Prices tick live in the front end (no backend required) ·
           Simulated trading for demonstration — not financial advice.
         </footer>
       </main>

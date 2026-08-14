@@ -1,10 +1,11 @@
 /**
- * VOLTEX — PriceChart
- * Interactive area chart (recharts) of live CoinGecko history with a live
- * price readout, period toggles (1H / 1D / 1W / 1M), and direction-aware
- * cyan/green gradient. Falls back to mock history when the API is busy.
+ * Dinoc Currency — PriceChart
+ * Interactive area chart (recharts) built from static mock history data
+ * (no API per assignment spec), with a live price readout and period
+ * toggles (1H / 1D / 1W / 1M) that re-sample the mock series, plus
+ * direction-aware color for up/down movement.
  */
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Area,
   AreaChart,
@@ -14,53 +15,76 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { FiArrowDownRight, FiArrowUpRight } from "react-icons/fi";
-import { COINS, MOCK_HISTORY, fetchHistory, formatPrice } from "../data/mockData";
+import { COINS, formatPrice } from "../data/mockData";
 
 const PERIODS = [
-  { label: "1H", days: 1 / 24, fmt: (t) => new Date(t).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) },
-  { label: "1D", days: 1, fmt: (t) => new Date(t).toLocaleTimeString([], { hour: "2-digit" }) },
-  { label: "1W", days: 7, fmt: (t) => new Date(t).toLocaleDateString([], { weekday: "short" }) },
-  { label: "1M", days: 30, fmt: (t) => new Date(t).toLocaleDateString([], { month: "short", day: "numeric" }) },
+  { label: "1H", stepMs: 3600000 }, // hourly points
+  { label: "1D", stepMs: 3600000 }, // hourly points (intraday)
+  { label: "1W", stepMs: 36000000 }, // ~10-min bands
+  { label: "1M", stepMs: 360000000 }, // ~1h bands
 ];
+
+/** Build 30 chart points by walking the static mock history for a period. */
+function sampleForPeriod(period, seed) {
+  const pts = [];
+  const now = Date.now();
+  let p = seed;
+  // deterministic pseudo-random based on period for consistent shape
+  const randSeed = period.label === "1H" ? 7 : period.label === "1D" ? 11 : period.label === "1W" ? 23 : 37;
+  for (let i = 0; i < 30; i++) {
+    const r = seededRand(randSeed + i);
+    const drift = (r() - 0.5) * 2 * (seed * 0.012);
+    p += drift;
+    pts.push({ time: now - (30 - i) * period.stepMs, close: p });
+  }
+  return pts;
+}
+
+function seededRand(seed) {
+  let s = seed;
+  return () => {
+    s = (s * 9301 + 49297) % 233280;
+    return s / 233280;
+  };
+}
 
 export default function PriceChart({ bySymbol, selectedSymbol }) {
   const coin = COINS.find((c) => c.symbol === selectedSymbol) ?? COINS[0];
   const market = bySymbol?.[coin.symbol];
   const [period, setPeriod] = useState(PERIODS[3]);
+
+  // Seed the chart series from the coin's current price so it feels per-coin
+  const series = useMemo(
+    () => sampleForPeriod(period, market?.current_price ?? 64218),
+    [period, market?.current_price],
+  );
+
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
-    const id = coin.id;
-    (async () => {
-      setLoading(true);
-      let pts = null;
-      try {
-        pts = await fetchHistory(id, Math.max(1, period.days));
-      } catch {
-        // fall back to mock daily history, resampled to feel like the period
-        const mult = period.days < 1 ? 0.02 : period.days <= 7 ? 0.3 : 1;
-        pts = MOCK_HISTORY.map((p, i) => ({
-          time: Date.now() - (MOCK_HISTORY.length - i) * 3600000,
-          close: 61200 * mult + p.close * (1 - mult) + (Math.random() - 0.5) * 400,
-        }));
-      }
+    setLoading(true);
+    // brief loading feel like a real chart request (data is local/mock)
+    const t = window.setTimeout(() => {
       if (cancelled) return;
       setData(
-        (pts ?? []).map((p) => ({
+        series.map((p) => ({
           time: p.time,
-          label: period.fmt(p.time),
+          label:
+            period.label === "1H" || period.label === "1D"
+              ? new Date(p.time).toLocaleTimeString([], { hour: "2-digit", minute: period.label === "1H" ? "2-digit" : undefined })
+              : new Date(p.time).toLocaleDateString([], { month: "short", day: "numeric" }),
           price: p.close,
         })),
       );
       setLoading(false);
-    })();
+    }, 250);
     return () => {
       cancelled = true;
+      window.clearTimeout(t);
     };
-  }, [coin.id, period]);
+  }, [series, period]);
 
   const up = (market?.price_change_percentage_24h ?? 0) >= 0;
   const stroke = up ? "var(--up)" : "var(--down)";
@@ -82,7 +106,7 @@ export default function PriceChart({ bySymbol, selectedSymbol }) {
             {market ? `$${formatPrice(market.current_price)}` : "—"}
           </div>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            {loading ? "Loading history…" : `${data.length} data points · live feed`}
+            {loading ? "Loading history…" : `${data.length} data points · simulated feed`}
           </p>
         </div>
 
@@ -120,11 +144,7 @@ export default function PriceChart({ bySymbol, selectedSymbol }) {
               tickLine={false}
               minTickGap={48}
             />
-            <YAxis
-              domain={["auto", "auto"]}
-              hide
-              orientation="right"
-            />
+            <YAxis domain={["auto", "auto"]} hide orientation="right" />
             <Tooltip
               contentStyle={{
                 background: "var(--popover)",

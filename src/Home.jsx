@@ -24,6 +24,12 @@ export default function Home() {
   const [depositOpen, setDepositOpen] = useState(false);
   const [usdtBalance, setUsdtBalance] = useState(12500);
 
+  // Live market mood: average 24h change across all tracked coins (real API data)
+  const avgChange = useMemo(() => {
+    if (!market || market.length === 0) return null;
+    return market.reduce((sum, c) => sum + (c.price_change_percentage_24h ?? 0), 0) / market.length;
+  }, [market]);
+
   const latestTx = useMemo(
     () =>
       transactions
@@ -62,6 +68,11 @@ export default function Home() {
               {loading ? "Connecting to market data…" : live ? "Live market data · CoinGecko" : "Demo mode · offline feed"}
             </span>
           </span>
+          {avgChange !== null && !loading && live && (
+            <span className={`flex items-center gap-1.5 rounded-sm px-2 py-0.5 text-xs font-mono font-medium ${avgChange >= 0 ? "bg-up/10 up-text" : "bg-down/10 down-text"}`}>
+              {avgChange >= 0 ? "▲" : "▼"} {avgChange.toFixed(2)}% avg 24h — {avgChange >= 0 ? "green market day" : "red market day"}
+            </span>
+          )}
           <div className="ml-auto flex items-center gap-2">
             <span className="font-mono text-xs text-muted-foreground">
               Available: ${usdtBalance.toLocaleString("en-US", { maximumFractionDigits: 2 })}

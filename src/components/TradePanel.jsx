@@ -50,6 +50,7 @@ export default function TradePanel({ bySymbol, selectedSymbol, onSelectPair, onT
       amount: amountNum,
       price: priceNum,
       orderType,
+      status: "completed",
     });
     setAmount("");
     setPrice("");

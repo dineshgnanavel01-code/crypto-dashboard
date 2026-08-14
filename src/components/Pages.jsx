@@ -14,7 +14,7 @@ import OrderBook from "./OrderBook";
 import Portfolio from "./Portfolio";
 import Transactions from "./Transactions";
 import TradePanel from "./TradePanel";
-import { COINS } from "../data/mockData";
+import { COINS, MOCK_TRANSACTIONS } from "../data/mockData";
 
 /** / — full dashboard: all sections on one page */
 export function DashboardGrid({ market, bySymbol, flashes, loading, selectedSymbol, setSelectedSymbol, transactions, usdtBalance, focus }) {
@@ -125,7 +125,7 @@ export function MarketPage({ market, bySymbol, flashes, loading, selectedSymbol,
 export function TradePage({ bySymbol, selectedSymbol, setSelectedSymbol, usdtBalance }) {
   const [transactions, setTransactions] = useState(() => {
     const t = window.__txStore;
-    return t && t.length > 0 ? t : [];
+    return t && t.length > 0 ? t : MOCK_TRANSACTIONS;
   });
 
   function handleTrade({ symbol, type, amount, price }) {

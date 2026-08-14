@@ -75,7 +75,8 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
     setSignedIn(false);
     toast.success("Signed out", { description: "Opening the Sign In page." });
     window.scrollTo({ top: 0, behavior: "instant" });
-    navigate("/signin", { replace: true });
+    // Guaranteed full-page navigation to the Sign In page
+    window.location.href = "/signin";
   }
 
   useEffect(() => {

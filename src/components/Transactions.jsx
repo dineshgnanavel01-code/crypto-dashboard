@@ -1,8 +1,4 @@
-/**
- * VOLTEX — Transactions
- * Trade history table: transaction ID, coin, type, amount, price, status
- * badge, and date/time. Newest first, responsive stacked view on mobile.
- */
+
 import { FiCheck, FiClock, FiX } from "react-icons/fi";
 import { formatPrice } from "../data/mockData";
 
@@ -15,7 +11,7 @@ export default function Transactions({ transactions }) {
     <section className="panel p-5">
       <h3 className="mb-3 font-display text-sm font-bold">Recent Transactions</h3>
 
-      {/* Desktop table */}
+      {}
       <div className="hidden overflow-x-auto md:block">
         <table className="w-full text-sm">
           <thead>
@@ -53,7 +49,7 @@ export default function Transactions({ transactions }) {
         </table>
       </div>
 
-      {/* Mobile stacked */}
+      {}
       <div className="flex flex-col gap-2 md:hidden">
         {sorted.map((tx) => (
           <div key={`${tx.id}-${tx._idx}`} className="rounded-md border border-border bg-secondary/40 p-3">

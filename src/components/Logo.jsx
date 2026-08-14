@@ -1,8 +1,4 @@
-/**
- * VOLTEX — Logo
- * Brand mark: lightning mark + VOLTEX wordmark (VOL in white, TEX in cyan).
- * Inline SVG so no external images are needed.
- */
+
 export default function Logo({ className = "" }) {
   return (
     <a href="/" className={`flex items-center gap-2.5 ${className}`}>

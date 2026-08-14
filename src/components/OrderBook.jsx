@@ -1,9 +1,4 @@
-/**
- * VOLTEX — OrderBook
- * Simulated L2 order book around the live mid price: asks (red) above,
- * bids (green) below, depth bars, price/amount/total columns, and a
- * mid-price spread indicator. Regenerates every 2s for a living feel.
- */
+
 import { useEffect, useMemo, useState } from "react";
 import { COINS, formatPrice, generateOrderBook } from "../data/mockData";
 
@@ -20,7 +15,7 @@ export default function OrderBook({ bySymbol, selectedSymbol }) {
     setBook(generateOrderBook(mid, decimals));
     const t = window.setInterval(() => setBook(generateOrderBook(mid, decimals)), 2000);
     return () => window.clearInterval(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [mid]);
 
   const rows = useMemo(() => {
@@ -48,14 +43,14 @@ export default function OrderBook({ bySymbol, selectedSymbol }) {
         <span className="micro-label">{coin.symbol}/USDT</span>
       </div>
 
-      {/* Column heads */}
+      {}
       <div className="micro-label mb-1 grid grid-cols-3 gap-2 px-1">
         <span>Price (USDT)</span>
         <span className="text-right">{coin.symbol}</span>
         <span className="text-right">Total</span>
       </div>
 
-      {/* Asks (sells) */}
+      {}
       <div className="space-y-px">
         {rows.asks.map((r, i) => (
           <div key={`a${i}`} className="relative grid grid-cols-3 gap-2 px-1 py-[3px] text-xs font-mono">
@@ -72,7 +67,7 @@ export default function OrderBook({ bySymbol, selectedSymbol }) {
         ))}
       </div>
 
-      {/* Mid price */}
+      {}
       <div className="my-1.5 flex items-center justify-center gap-2 border-y border-border py-1.5">
         <span className="font-mono text-sm font-semibold cyan-text">
           ${mid ? formatPrice(mid) : "—"}
@@ -82,7 +77,7 @@ export default function OrderBook({ bySymbol, selectedSymbol }) {
         </span>
       </div>
 
-      {/* Bids (buys) */}
+      {}
       <div className="space-y-px">
         {rows.bids.map((r, i) => (
           <div key={`b${i}`} className="relative grid grid-cols-3 gap-2 px-1 py-[3px] text-xs font-mono">

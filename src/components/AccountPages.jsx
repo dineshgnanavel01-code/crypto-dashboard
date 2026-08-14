@@ -1,11 +1,4 @@
-/**
- * DINOC — Account pages (SignIn / Profile / Settings)
- * Standalone full-screen pages with the DINOC navbar stripped away, so the
- * Sign Out flow lands on a clean Sign In page. Profile and Settings keep the
- * shared layout header for consistent navigation back to the dashboard.
- *
- * Style: Midnight Precision Deck — dark navy, mono numerals, cyan accent.
- */
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -24,14 +17,12 @@ import {
 } from "react-icons/fi";
 import Logo from "./Logo";
 
-/* ---------------------------------------------------------------
-   Shared styles: smooth hover/transition on every interactive element
-   --------------------------------------------------------------- */
+
 const HOVER = "transition-all duration-200 hover:brightness-125 hover:scale-[1.02] hover:shadow-[0_0_14px_rgba(56,189,248,0.3)] active:scale-[0.96] active:brightness-150 active:duration-75 cursor-pointer";
 const INPUT =
   "h-11 w-full rounded-md border border-slate-700 bg-slate-900/80 px-3 pl-10 text-sm text-foreground placeholder:text-slate-500 focus:outline-none focus:border-primary/70 focus:shadow-[0_0_12px_rgba(56,189,248,0.25)] transition-all duration-200";
 
-/** Tiny shared page header used by Profile & Settings (signin is full-screen) */
+
 function PageTop({ title, subtitle }) {
   return (
     <div className="mb-6 flex items-end justify-between gap-4">
@@ -48,9 +39,6 @@ function PageTop({ title, subtitle }) {
   );
 }
 
-/* ===============================================================
-   SIGN IN PAGE — reached by clicking "Sign out" (or visiting /signin)
-   =============================================================== */
 export function SignInPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -65,14 +53,12 @@ export function SignInPage() {
       return;
     }
     setLoading(true);
-    // Demo only — no backend; any credentials "sign in" instantly.
     setTimeout(() => {
       setLoading(false);
-      // Demo session persisted in localStorage so the navbar can switch between
-      // the Sign In button and the profile chip on every page.
+
+
       localStorage.setItem("dinoc_signed_in", "1");
       toast.success("Welcome back!", { description: "Demo sign-in — no real session was created." });
-      // Go back to the previous page (dashboard or last visited page); fallback to /signin's referer-safe dashboard "/"
       if (window.history.length > 1) {
         navigate(-1);
       } else {
@@ -170,9 +156,7 @@ export function SignInPage() {
   );
 }
 
-/* ===============================================================
-   PROFILE PAGE
-   =============================================================== */
+
 export function ProfilePage() {
   const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
@@ -185,7 +169,7 @@ export function ProfilePage() {
       <main className="container max-w-2xl py-8">
         <PageTop title="Profile" subtitle="Your account identity and verification status" />
 
-        {/* Identity card */}
+        {}
         <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900/60">
           <div className="flex items-center gap-4 border-b border-slate-800 px-5 py-5">
             <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/15 text-lg font-bold text-primary">
@@ -272,9 +256,7 @@ export function ProfilePage() {
   );
 }
 
-/* ===============================================================
-   SETTINGS PAGE
-   =============================================================== */
+
 export function SettingsPage() {
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState(true);

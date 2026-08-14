@@ -1,9 +1,4 @@
-/**
- * VOLTEX — MarketOverview
- * Live market table: coin, symbol, price (flashing on tick), 24h change,
- * market cap, 24h volume, plus a compact sparkline per row.
- * Responsive: table on desktop, stacked cards on mobile.
- */
+
 
 import { useEffect, useRef } from "react";
 import { FiArrowUpRight, FiArrowDownRight } from "react-icons/fi";
@@ -29,7 +24,7 @@ export default function MarketOverview({ market, flashes, loading, onSelect }) {
         </span>
       </div>
 
-      {/* Desktop table */}
+      {}
       <div className="hidden lg:block overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
@@ -91,7 +86,7 @@ export default function MarketOverview({ market, flashes, loading, onSelect }) {
         </table>
       </div>
 
-      {/* Mobile/tablet cards */}
+      {}
       <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:hidden">
         {COINS.map((c) => {
           const m = byId[c.id];
@@ -133,12 +128,7 @@ export default function MarketOverview({ market, flashes, loading, onSelect }) {
     </section>
   );
 }
-/**
 
- * VOLTEX — Sparkline
- * Deterministic pseudo-random sparkline (seeded by symbol) so every row has
- * a consistent mini chart without fetching per-row history. Draws in on mount.
- */
 
 function seededRand(seed) {
   let s = seed;

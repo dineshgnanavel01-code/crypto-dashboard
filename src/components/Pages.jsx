@@ -1,9 +1,4 @@
-/**
- * Dinoc Currency — Per-page views
- * Each navbar item (Market / Portfolio / Trade / History) is a real, separate
- * page. These views render only the content relevant to that page, keeping
- * the shared navbar, ticker tape, status bar and footer on every page.
- */
+
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { FiArrowRight, FiTrendingUp, FiBriefcase, FiActivity, FiList } from "react-icons/fi";
@@ -16,7 +11,7 @@ import Transactions from "./Transactions";
 import TradePanel from "./TradePanel";
 import { COINS, MOCK_TRANSACTIONS } from "../data/mockData";
 
-/** / — full dashboard: all sections on one page */
+
 export function DashboardGrid({ market, bySymbol, flashes, loading, selectedSymbol, setSelectedSymbol, transactions, usdtBalance, focus }) {
   void focus;
   function handleTrade({ symbol, type, amount, price, orderType }) {
@@ -49,7 +44,7 @@ const PAGE_LINKS = [
   { label: "History", path: "/history", icon: FiList },
 ];
 
-/* Shared page header: title, blurb, quick links to the other pages */
+
 function PageHead({ icon: Icon, title, blurb }) {
   return (
     <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
@@ -80,7 +75,7 @@ function PageHead({ icon: Icon, title, blurb }) {
   );
 }
 
-/** /portfolio — full-page portfolio view */
+
 export function PortfolioPage({ bySymbol, loading }) {
   return (
     <div>
@@ -98,7 +93,7 @@ export function PortfolioPage({ bySymbol, loading }) {
   );
 }
 
-/** /market — full-page market overview view */
+
 export function MarketPage({ market, bySymbol, flashes, loading, selectedSymbol, setSelectedSymbol }) {
   return (
     <div>
@@ -121,7 +116,7 @@ export function MarketPage({ market, bySymbol, flashes, loading, selectedSymbol,
   );
 }
 
-/** /trade — full-page trading view */
+
 export function TradePage({ bySymbol, selectedSymbol, setSelectedSymbol, usdtBalance }) {
   const [transactions, setTransactions] = useState(() => {
     const t = window.__txStore;
@@ -173,7 +168,7 @@ export function TradePage({ bySymbol, selectedSymbol, setSelectedSymbol, usdtBal
   );
 }
 
-/** /history — full-page transaction history view */
+
 export function HistoryPage({ transactions, bySymbol }) {
   const byType = useMemo(() => {
     const counts = { BUY: 0, SELL: 0 };

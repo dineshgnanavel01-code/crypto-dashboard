@@ -1,11 +1,4 @@
-/**
- * VOLTEX — Home (main dashboard page)
- * Asymmetric trading-grid layout: ticker tape, central chart column,
- * left rail (portfolio + market overview), right column (trade + order book),
- * transactions spanning full width. All data wired through useMarketData.
- *
- * Style: Midnight Precision Deck — dark navy, mono numerals, cyan accent.
- */
+
 import { useMemo, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { FiZap } from "react-icons/fi";
@@ -27,7 +20,7 @@ export default function Home() {
   const [depositOpen, setDepositOpen] = useState(false);
   const [usdtBalance, setUsdtBalance] = useState(12500);
 
-  // Market mood: average 24h change across all tracked coins (static sample data)
+
   const avgChange = useMemo(() => {
     if (!market || market.length === 0) return null;
     return market.reduce((sum, c) => sum + (c.price_change_percentage_24h ?? 0), 0) / market.length;
@@ -59,20 +52,20 @@ export default function Home() {
 
       <main className="container py-6">
         <Routes>
-          {/* / — full dashboard (default) */}
+          {}
           <Route index element={<DashboardGrid market={market} bySymbol={bySymbol} flashes={flashes} loading={loading} selectedSymbol={selectedSymbol} setSelectedSymbol={setSelectedSymbol} transactions={transactions} usdtBalance={usdtBalance} focus="all" />} />
-          {/* Each nav item opens its OWN page: */}
+          {}
           <Route path="portfolio" element={<PortfolioPage bySymbol={bySymbol} loading={loading} />} />
           <Route path="market" element={<MarketPage market={market} bySymbol={bySymbol} flashes={flashes} loading={loading} selectedSymbol={selectedSymbol} setSelectedSymbol={setSelectedSymbol} />} />
           <Route path="trade" element={<TradePage bySymbol={bySymbol} selectedSymbol={selectedSymbol} setSelectedSymbol={setSelectedSymbol} usdtBalance={usdtBalance} />} />
           <Route path="history" element={<HistoryPage transactions={transactions} bySymbol={bySymbol} />} />
-          {/* Account pages (profile menu): */}
+          {}
           <Route path="signin" element={<SignInPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-        {/* Status bar */}
+        {}
         <div className="mb-5 flex flex-wrap items-center gap-3">
           <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <FiZap size={13} className="cyan-text" />
@@ -113,11 +106,6 @@ export default function Home() {
   );
 }
 
-/**
- * VOLTEX — TickerTape
- * Scrolling marquee of live prices beneath the header — a signature
- * terminal element that confirms the tape is alive at a glance.
- */
 
 function TickerTape({ market }) {
   const rows = (market ?? []).flatMap((m) => {
@@ -132,8 +120,8 @@ function TickerTape({ market }) {
         </span>
       </span>
     );
-    // Duplicate the strip so the marquee scrolls seamlessly; the two passes
-    // must carry distinct keys to keep React happy.
+
+
     return [
       { ...content, key: `tape-a-${m.symbol}` },
       { ...content, key: `tape-b-${m.symbol}` },

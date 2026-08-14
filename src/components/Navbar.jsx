@@ -1,12 +1,4 @@
-/**
- * DINOC — Navbar
- * Reference-matched navbar: logo in a bordered rounded box, plain icon+text
- * nav items (no background pills), dark search box, bell button, compact
- * profile chip. Every button and nav item has explicit hover AND active
- * (click/press) effects: scale, glow, underline, and color transitions.
- *
- * Style: Midnight Precision Deck — dark navy, mono numerals, cyan accent.
- */
+
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -29,12 +21,7 @@ import { FiSearch,
 import { COINS } from "../data/mockData";
 import Logo from "./Logo";
 
-/* ---------------------------------------------------------------
-   Shared hover / click effect styles (applied to every interactive
-   element so all of them react to hover AND to being clicked).
-   - hover: lift/brighten + cyan glow ring + text turn white/cyan
-   - active (mouse-down click): shrink slightly + press feedback
-   --------------------------------------------------------------- */
+
 const HOVER = "transition-all duration-200 hover:brightness-125 hover:scale-[1.03] hover:shadow-[0_0_14px_rgba(56,189,248,0.35)] active:scale-[0.95] active:brightness-150 active:duration-75 cursor-pointer";
 const NAV_ITEM = `${HOVER} flex items-center gap-1.5 px-2 py-2 rounded-none text-sm text-slate-400 hover:text-white focus-visible:text-white`;
 
@@ -50,16 +37,13 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
   const profileRef = useRef(null);
   const notifRef = useRef(null);
 
-  /* Sign In / Sign Out state — demo session persisted in localStorage by
-     the Sign In page so the navbar can show the Sign In button when
-     signed out and the profile chip when signed in. */
+  
   const [signedIn, setSignedIn] = useState(
     () => localStorage.getItem("dinoc_signed_in") === "1",
   );
 
   useEffect(() => {
-    /* Keep the navbar in sync when the demo sign-in sets the flag in
-       another tab or after navigation away from the Sign In page. */
+    
     const onChange = () => setSignedIn(localStorage.getItem("dinoc_signed_in") === "1");
     window.addEventListener("storage", onChange);
     const timer = setInterval(onChange, 500);
@@ -75,7 +59,7 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
     setSignedIn(false);
     toast.success("Signed out", { description: "Opening the Sign In page." });
     window.scrollTo({ top: 0, behavior: "instant" });
-    // Guaranteed full-page navigation to the Sign In page
+
     window.location.href = "/signin";
   }
 
@@ -106,9 +90,7 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
 
   const location = useLocation();
 
-  /* Multi-page navigation: each nav item now opens its OWN page below the
-     navbar — Market / Portfolio / Trade / History are separate routes, so a
-     click really goes to a different page instead of scrolling on one. */
+  
   const nav = [
     { label: "Market", icon: FiTrendingUp, href: "/market" },
     { label: "Portfolio", icon: FiBriefcase, href: "/portfolio" },
@@ -129,13 +111,12 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
   return (
     <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/92 backdrop-blur-md">
       <div className="flex h-14 items-center justify-between gap-2 px-2">
-        {/* Logo in bordered box (reference-matched) */}
+        {}
         <div className="flex items-center rounded-lg border border-slate-700 bg-slate-900 px-2 py-1">
           <Logo />
         </div>
 
-        {/* Desktop nav — plain icon+text, hover turns white/cyan, click presses.
-            Each item is a Link to its own page; the active page is highlighted. */}
+        {}
         <nav className="hidden md:flex items-center gap-3.5">
           {nav.map((n) => {
             const active = location.pathname === n.href;
@@ -157,9 +138,9 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
           })}
         </nav>
 
-        {/* Right controls */}
+        {}
         <div className="flex items-center gap-2">
-          {/* Search — dark box, cyan border on focus */}
+          {}
           <div className="relative hidden sm:block">
             <FiSearch
               size={14}
@@ -206,7 +187,7 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
             )}
           </div>
 
-          {/* Notifications — bell with click-press effect */}
+          {}
           <div ref={notifRef} className="relative">
             <button
               onClick={() => setNotifOpen((v) => !v)}
@@ -241,8 +222,7 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
             )}
           </div>
 
-          {/* Profile chip — always visible (per user request: no Sign in button,
-              only the DC profile icon with Profile / Settings / Sign out) */}
+          {}
           <div ref={profileRef} className="relative">
             <button
               onClick={() => setProfileOpen((v) => !v)}
@@ -293,7 +273,7 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
               )}
           </div>
 
-          {/* Mobile menu toggle */}
+          {}
           <button
             onClick={() => setMobileOpen((v) => !v)}
             className={`flex h-9 w-9 items-center justify-center rounded-md border text-slate-400 hover:text-white md:hidden ${HOVER} ${
@@ -306,7 +286,7 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {}
       {mobileOpen && (
         <div className="border-t border-slate-800 bg-slate-950 md:hidden">
           <div className="mx-auto max-w-[1440px] flex flex-col gap-1 px-4 py-3">

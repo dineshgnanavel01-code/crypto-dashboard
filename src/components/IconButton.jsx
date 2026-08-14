@@ -1,7 +1,4 @@
-/**
- * VOLTEX — IconButton
- * Generic icon button with toast feedback for placeholder actions.
- */
+
 import { toast } from "sonner";
 
 export default function IconButton({ icon: Icon, label, onClick, active, className = "" }) {

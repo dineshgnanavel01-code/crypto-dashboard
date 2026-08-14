@@ -1,10 +1,4 @@
-/**
- * Dinoc Currency — PriceChart
- * Interactive area chart (recharts) built from static mock history data
- * (no API per assignment spec), with a live price readout and period
- * toggles (1H / 1D / 1W / 1M) that re-sample the mock series, plus
- * direction-aware color for up/down movement.
- */
+
 import { useEffect, useMemo, useState } from "react";
 import {
   Area,
@@ -18,18 +12,18 @@ import {
 import { COINS, formatPrice } from "../data/mockData";
 
 const PERIODS = [
-  { label: "1H", stepMs: 3600000 }, // hourly points
-  { label: "1D", stepMs: 3600000 }, // hourly points (intraday)
-  { label: "1W", stepMs: 36000000 }, // ~10-min bands
-  { label: "1M", stepMs: 360000000 }, // ~1h bands
+  { label: "1H", stepMs: 3600000 },
+  { label: "1D", stepMs: 3600000 },
+  { label: "1W", stepMs: 36000000 },
+  { label: "1M", stepMs: 360000000 },
 ];
 
-/** Build 30 chart points by walking the static mock history for a period. */
+
 function sampleForPeriod(period, seed) {
   const pts = [];
   const now = Date.now();
   let p = seed;
-  // deterministic pseudo-random based on period for consistent shape
+
   const randSeed = period.label === "1H" ? 7 : period.label === "1D" ? 11 : period.label === "1W" ? 23 : 37;
   for (let i = 0; i < 30; i++) {
     const r = seededRand(randSeed + i);
@@ -53,7 +47,7 @@ export default function PriceChart({ bySymbol, selectedSymbol }) {
   const market = bySymbol?.[coin.symbol];
   const [period, setPeriod] = useState(PERIODS[3]);
 
-  // Seed the chart series from the coin's current price so it feels per-coin
+
   const series = useMemo(
     () => sampleForPeriod(period, market?.current_price ?? 64218),
     [period, market?.current_price],
@@ -65,7 +59,7 @@ export default function PriceChart({ bySymbol, selectedSymbol }) {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    // brief loading feel like a real chart request (data is local/mock)
+
     const t = window.setTimeout(() => {
       if (cancelled) return;
       setData(
@@ -116,7 +110,7 @@ export default function PriceChart({ bySymbol, selectedSymbol }) {
               key={p.label}
               onClick={() => {
                 setPeriod(p);
-                // smooth scroll the chart into view below the navbar
+
                 const el = document.querySelector("#chart");
                 if (el) {
                   const top = el.getBoundingClientRect().top + window.scrollY - 96;

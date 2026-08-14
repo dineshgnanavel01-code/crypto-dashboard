@@ -1,8 +1,4 @@
-/**
- * VOLTEX — Portfolio
- * Total balance, available USDT balance, 24h P/L, per-asset allocation
- * bars (visual indicators) and holdings list — all re-priced live.
- */
+
 import { FiArrowDownRight, FiArrowUpRight, FiTrendingUp } from "react-icons/fi";
 import { MOCK_HOLDINGS } from "../data/mockData";
 
@@ -24,7 +20,7 @@ export default function Portfolio({ bySymbol }) {
     <section className="panel panel-active p-5">
       <h3 className="mb-4 font-display text-sm font-bold">Portfolio</h3>
 
-      {/* Summary cards */}
+      {}
       <div className="mb-4 grid grid-cols-2 gap-2.5">
         <div className="rounded-md border border-border bg-secondary/40 p-3">
           <div className="micro-label mb-1">Total Balance</div>
@@ -54,7 +50,7 @@ export default function Portfolio({ bySymbol }) {
         </span>
       </div>
 
-      {/* Holdings with allocation */}
+      {}
       <div className="mb-2 flex items-center gap-2">
         <FiTrendingUp size={13} className="text-muted-foreground" />
         <span className="micro-label">Asset Allocation</span>

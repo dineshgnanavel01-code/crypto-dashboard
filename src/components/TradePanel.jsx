@@ -1,9 +1,4 @@
-/**
- * VOLTEX — TradePanel
- * Trade form: pair selector, live market price, buy/sell tabs, amount and
- * price inputs with live total calculation, order type selector, and a
- * confirmation modal. Inputs validate live and give instant feedback.
- */
+
 import { useMemo, useState } from "react";
 import { FiMinus, FiPlus } from "react-icons/fi";
 import { toast } from "sonner";
@@ -68,7 +63,7 @@ export default function TradePanel({ bySymbol, selectedSymbol, onSelectPair, onT
   return (
     <>
       <section className="panel panel-active flex flex-col p-5">
-        {/* Pair selector */}
+        {}
         <div className="mb-4 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <select
@@ -90,7 +85,7 @@ export default function TradePanel({ bySymbol, selectedSymbol, onSelectPair, onT
           <span className="micro-label">Spot</span>
         </div>
 
-        {/* Buy/Sell tabs */}
+        {}
         <div className="mb-4 grid grid-cols-2 gap-1 rounded-md bg-secondary/60 p-1">
           {["buy", "sell"].map((s) => (
             <button
@@ -109,7 +104,7 @@ export default function TradePanel({ bySymbol, selectedSymbol, onSelectPair, onT
           ))}
         </div>
 
-        {/* Order type */}
+        {}
         <div className="mb-3">
           <div className="micro-label mb-1.5">Order Type</div>
           <div className="flex gap-1">
@@ -129,7 +124,7 @@ export default function TradePanel({ bySymbol, selectedSymbol, onSelectPair, onT
           </div>
         </div>
 
-        {/* Amount */}
+        {}
         <div className="mb-3">
           <div className="micro-label mb-1.5 flex justify-between">
             <span>Amount ({coin.symbol})</span>
@@ -176,7 +171,7 @@ export default function TradePanel({ bySymbol, selectedSymbol, onSelectPair, onT
           </div>
         </div>
 
-        {/* Price */}
+        {}
         {orderType !== "Market" && (
           <div className="mb-3">
             <div className="micro-label mb-1.5">
@@ -195,7 +190,7 @@ export default function TradePanel({ bySymbol, selectedSymbol, onSelectPair, onT
           </div>
         )}
 
-        {/* Total */}
+        {}
         <div className="mb-4 flex items-center justify-between rounded-md border border-border bg-secondary/40 px-3 py-2">
           <span className="micro-label">Total (USDT)</span>
           <span className="font-mono text-sm font-semibold">
@@ -203,7 +198,7 @@ export default function TradePanel({ bySymbol, selectedSymbol, onSelectPair, onT
           </span>
         </div>
 
-        {/* Submit */}
+        {}
         <button
           onClick={submit}
           className={`btn-press w-full rounded-md py-3 text-sm font-bold text-white transition-all duration-300 ease-out hover:scale-[1.015] hover:shadow-[0_6px_24px_rgba(56,189,248,0.25)] hover:brightness-110 hover:-translate-y-0.5 active:scale-[0.98] active:shadow-none active:translate-y-0 active:duration-75 ${
@@ -235,12 +230,7 @@ export default function TradePanel({ bySymbol, selectedSymbol, onSelectPair, onT
     </>
   );
 }
-/**
 
- * VOLTEX — TradeModal
- * Trade confirmation dialog: reviews side, amount, price, total and order
- * type before executing. Buy confirms in green, sell in red.
- */
 
 function TradeModal({ coin, side, amount, price, total, orderType, onConfirm, onCancel }) {
   const accent = side === "buy" ? "bg-up text-black" : "bg-down text-white";

@@ -271,9 +271,9 @@
 
   @media (min-width: 1024px) {
     .container {
-      padding-left: 2rem;
-      padding-right: 2rem;
-      max-width: 1440px;
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+      max-width: 100%;
     }
   }
 }

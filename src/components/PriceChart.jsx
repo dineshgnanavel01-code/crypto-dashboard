@@ -93,7 +93,7 @@ export default function PriceChart({ bySymbol, selectedSymbol }) {
   const change = last && first ? ((last - first) / first) * 100 : 0;
 
   return (
-    <section className="panel panel-active p-5">
+    <section id="chart" className="panel panel-active p-5">
       <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
@@ -114,11 +114,19 @@ export default function PriceChart({ bySymbol, selectedSymbol }) {
           {PERIODS.map((p) => (
             <button
               key={p.label}
-              onClick={() => setPeriod(p)}
-              className={`btn-press rounded-sm px-3 py-1.5 text-xs font-semibold transition-colors duration-150 ${
+              onClick={() => {
+                setPeriod(p);
+                // smooth scroll the chart into view below the navbar
+                const el = document.querySelector("#chart");
+                if (el) {
+                  const top = el.getBoundingClientRect().top + window.scrollY - 96;
+                  window.scrollTo({ top, behavior: "smooth" });
+                }
+              }}
+              className={`btn-press rounded-sm px-3 py-1.5 text-xs font-semibold transition-all duration-200 hover:scale-[1.06] hover:brightness-125 hover:shadow-[0_0_10px_rgba(56,189,248,0.35)] active:scale-[0.92] active:brightness-150 active:duration-75 cursor-pointer ${
                 period.label === p.label
-                  ? "bg-primary/15 text-primary"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "bg-primary/15 text-primary underline underline-offset-4"
+                  : "text-muted-foreground hover:text-white"
               }`}
             >
               {p.label}

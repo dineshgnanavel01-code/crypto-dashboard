@@ -7,8 +7,10 @@
  * Style: Midnight Precision Deck — dark navy, mono numerals, cyan accent.
  */
 import { useMemo, useState } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { FiZap } from "react-icons/fi";
 import Navbar from "./components/Navbar";
+import { DashboardGrid, HistoryPage, MarketPage, PortfolioPage, TradePage } from "./components/Pages";
 import MarketOverview from "./components/MarketOverview";
 import TradePanel from "./components/TradePanel";
 import PriceChart from "./components/PriceChart";
@@ -55,6 +57,16 @@ export default function Home() {
       <TickerTape market={market} />
 
       <main className="container py-6">
+        <Routes>
+          {/* / — full dashboard (default) */}
+          <Route index element={<DashboardGrid market={market} bySymbol={bySymbol} flashes={flashes} loading={loading} selectedSymbol={selectedSymbol} setSelectedSymbol={setSelectedSymbol} transactions={transactions} usdtBalance={usdtBalance} focus="all" />} />
+          {/* Each nav item opens its OWN page: */}
+          <Route path="portfolio" element={<PortfolioPage bySymbol={bySymbol} loading={loading} />} />
+          <Route path="market" element={<MarketPage market={market} bySymbol={bySymbol} flashes={flashes} loading={loading} selectedSymbol={selectedSymbol} setSelectedSymbol={setSelectedSymbol} />} />
+          <Route path="trade" element={<TradePage bySymbol={bySymbol} selectedSymbol={selectedSymbol} setSelectedSymbol={setSelectedSymbol} usdtBalance={usdtBalance} />} />
+          <Route path="history" element={<HistoryPage transactions={transactions} bySymbol={bySymbol} />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
         {/* Status bar */}
         <div className="mb-5 flex flex-wrap items-center gap-3">
           <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -83,39 +95,6 @@ export default function Home() {
             >
               Deposit
             </button>
-          </div>
-        </div>
-
-        {/* Main grid: chart center, trade + order book right, portfolio + market left */}
-        <div className="grid grid-cols-1 gap-4 xl:grid-cols-[280px_1fr_320px]">
-          {/* Left rail */}
-          <div className="order-2 flex flex-col gap-4 xl:order-1">
-            <div id="portfolio"><Portfolio bySymbol={bySymbol} /></div>
-            <MarketOverview
-              market={market}
-              flashes={flashes}
-              loading={loading}
-              onSelect={(s) => setSelectedSymbol(s)}
-            />
-          </div>
-
-          {/* Center: chart */}
-          <div className="order-1 xl:order-2">
-            <div id="market"><PriceChart bySymbol={bySymbol} selectedSymbol={selectedSymbol} /></div>
-            <div className="mt-4">
-              <div id="history"><Transactions transactions={transactions} /></div>
-            </div>
-          </div>
-
-          {/* Right column */}
-          <div className="order-3 flex flex-col gap-4">
-            <div id="trade"><TradePanel
-              bySymbol={bySymbol}
-              selectedSymbol={selectedSymbol}
-              onSelectPair={(s) => setSelectedSymbol(s)}
-              onTrade={handleTrade}
-            /></div>
-            <OrderBook bySymbol={bySymbol} selectedSymbol={selectedSymbol} />
           </div>
         </div>
 

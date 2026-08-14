@@ -9,6 +9,7 @@
  */
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import { toast } from "sonner";
 import {
@@ -73,14 +74,16 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
 
   const showDropdown = searchFocused && query.trim().length > 0;
 
-  /* Custom landing offsets per section — Portfolio and History land lower so
-     the content BELOW each section card (Market table, Transactions) is
-     visible right after the click, instead of the card top hugging the nav. */
+  const location = useLocation();
+
+  /* Multi-page navigation: each nav item now opens its OWN page below the
+     navbar — Market / Portfolio / Trade / History are separate routes, so a
+     click really goes to a different page instead of scrolling on one. */
   const nav = [
-    { label: "Market", icon: FiTrendingUp, href: "#market", offset: 88 },
-    { label: "Portfolio", icon: FiBriefcase, href: "#portfolio", offset: 140 },
-    { label: "Trade", icon: FiActivity, href: "#trade", offset: 88 },
-    { label: "History", icon: FiList, href: "#history", offset: 160 },
+    { label: "Market", icon: FiTrendingUp, href: "/market" },
+    { label: "Portfolio", icon: FiBriefcase, href: "/portfolio" },
+    { label: "Trade", icon: FiActivity, href: "/trade" },
+    { label: "History", icon: FiList, href: "/history" },
   ];
 
   const profileItems = [
@@ -112,33 +115,26 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
         </div>
 
         {/* Desktop nav — plain icon+text, hover turns white/cyan, click presses.
-            Click scrolls to the section with a custom offset so the content
-            below each section lands just under the sticky navbar. */}
+            Each item is a Link to its own page; the active page is highlighted. */}
         <nav className="hidden md:flex items-center gap-1">
-          {nav.map((n) => (
-            <a
-              key={n.label}
-              href={n.href}
-              className={NAV_ITEM}
-              onClick={(e) => {
-                e.preventDefault();
-                const el = document.querySelector(n.href);
-                if (el) {
-                  const top = el.getBoundingClientRect().top + window.scrollY - n.offset;
-                  window.scrollTo({ top, behavior: "smooth" });
-                  window.history.replaceState(null, "", n.href);
-                }
-              }}
-              onMouseDown={() => setPressedNav(n.label)}
-              onMouseUp={() => setPressedNav(null)}
-              onMouseLeave={() => setPressedNav(null)}
-            >
-              <n.icon size={16} className={pressedNav === n.label ? "text-primary" : undefined} />
-              <span className={`relative ${pressedNav === n.label ? "underline underline-offset-4 decoration-primary" : ""}`}>
-                {n.label}
-              </span>
-            </a>
-          ))}
+          {nav.map((n) => {
+            const active = location.pathname === n.href;
+            return (
+              <Link
+                key={n.label}
+                to={n.href}
+                className={`${NAV_ITEM} ${active ? "!text-primary" : ""}`}
+                onMouseDown={() => setPressedNav(n.label)}
+                onMouseUp={() => setPressedNav(null)}
+                onMouseLeave={() => setPressedNav(null)}
+              >
+                <n.icon size={16} className={pressedNav === n.label || active ? "text-primary" : undefined} />
+                <span className={`relative ${pressedNav === n.label || active ? "underline underline-offset-4 decoration-primary" : ""}`}>
+                  {n.label}
+                </span>
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Right controls */}
@@ -300,22 +296,17 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
               aria-label="Search cryptocurrency"
             />
             {nav.map((n) => (
-              <a
+              <Link
                 key={n.label}
-                href={n.href}
-                onClick={(e) => {
-                  setMobileOpen(false);
-                  const el = document.querySelector(n.href);
-                  if (el) {
-                    const top = el.getBoundingClientRect().top + window.scrollY - n.offset;
-                    window.scrollTo({ top, behavior: "smooth" });
-                  }
-                }}
-                className={`flex items-center gap-2.5 rounded-md px-3 py-2.5 text-sm text-slate-400 hover:text-white transition-colors hover:bg-slate-800 active:bg-slate-700 ${HOVER}`}
+                to={n.href}
+                onClick={() => setMobileOpen(false)}
+                className={`flex items-center gap-2.5 rounded-md px-3 py-2.5 text-sm transition-colors hover:bg-slate-800 active:bg-slate-700 ${
+                  location.pathname === n.href ? "text-primary" : "text-slate-400 hover:text-white"
+                } ${HOVER}`}
               >
                 <n.icon size={15} />
                 {n.label}
-              </a>
+              </Link>
             ))}
           </div>
         </div>

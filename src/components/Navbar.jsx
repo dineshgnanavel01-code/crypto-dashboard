@@ -95,8 +95,9 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
       icon: FiLogOut,
       onClick: () => {
         setProfileOpen(false);
-        toast.success("Signed out", { description: "Redirecting to the Sign In page." });
-        navigate("/signin");
+        toast.success("Signed out", { description: "Opening the Sign In page." });
+        window.scrollTo({ top: 0, behavior: "instant" });
+        navigate("/signin", { replace: true });
       },
     },
   ];

@@ -9,7 +9,7 @@
  */
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { toast } from "sonner";
 import {
@@ -39,6 +39,7 @@ const HOVER = "transition-all duration-200 hover:brightness-125 hover:scale-[1.0
 const NAV_ITEM = `${HOVER} flex items-center gap-2 px-3 py-2 rounded-md text-sm text-slate-400 hover:text-white focus-visible:text-white`;
 
 export default function Navbar({ bySymbol, onSearchSelect }) {
+  const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
@@ -87,21 +88,15 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
   ];
 
   const profileItems = [
-    { label: "Profile", icon: FiUser, onClick: () => { setProfileOpen(false); toast("Profile view coming soon"); } },
-    {
-      label: "Settings",
-      icon: FiSettings,
-      onClick: () => {
-        setProfileOpen(false);
-        toast("Settings coming soon", { description: "Profile preferences will be available in the next update." });
-      },
-    },
+    { label: "Profile", icon: FiUser, onClick: () => { setProfileOpen(false); navigate("/profile"); } },
+    { label: "Settings", icon: FiSettings, onClick: () => { setProfileOpen(false); navigate("/settings"); } },
     {
       label: "Sign out",
       icon: FiLogOut,
       onClick: () => {
         setProfileOpen(false);
-        toast("Signed out (demo)", { description: "This is a demo terminal — no real session exists." });
+        toast.success("Signed out", { description: "Redirecting to the Sign In page." });
+        navigate("/signin");
       },
     },
   ];

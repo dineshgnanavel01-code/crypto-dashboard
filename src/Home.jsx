@@ -11,6 +11,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { FiZap } from "react-icons/fi";
 import Navbar from "./components/Navbar";
 import { DashboardGrid, HistoryPage, MarketPage, PortfolioPage, TradePage } from "./components/Pages";
+import { ProfilePage, SettingsPage, SignInPage } from "./components/AccountPages";
 import MarketOverview from "./components/MarketOverview";
 import TradePanel from "./components/TradePanel";
 import PriceChart from "./components/PriceChart";
@@ -65,6 +66,10 @@ export default function Home() {
           <Route path="market" element={<MarketPage market={market} bySymbol={bySymbol} flashes={flashes} loading={loading} selectedSymbol={selectedSymbol} setSelectedSymbol={setSelectedSymbol} />} />
           <Route path="trade" element={<TradePage bySymbol={bySymbol} selectedSymbol={selectedSymbol} setSelectedSymbol={setSelectedSymbol} usdtBalance={usdtBalance} />} />
           <Route path="history" element={<HistoryPage transactions={transactions} bySymbol={bySymbol} />} />
+          {/* Account pages (profile menu): */}
+          <Route path="signin" element={<SignInPage />} />
+          <Route path="profile" element={<ProfilePage />} />
+          <Route path="settings" element={<SettingsPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         {/* Status bar */}

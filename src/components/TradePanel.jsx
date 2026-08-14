@@ -95,11 +95,11 @@ export default function TradePanel({ bySymbol, selectedSymbol, onSelectPair, onT
             <button
               key={s}
               onClick={() => setSide(s)}
-              className={`btn-press rounded-sm py-2 text-sm font-semibold capitalize transition-colors duration-150 ${
+              className={`btn-press rounded-sm py-2 text-sm font-semibold capitalize transition-all duration-200 hover:scale-[1.03] hover:brightness-115 hover:shadow-[0_0_12px_rgba(56,189,248,0.3)] active:scale-[0.96] active:duration-75 ${
                 side === s
                   ? s === "buy"
-                    ? "bg-up text-black"
-                    : "bg-down text-white"
+                    ? "bg-up text-black shadow-[0_0_16px_rgba(52,211,153,0.45)]"
+                    : "bg-down text-white shadow-[0_0_16px_rgba(248,113,113,0.45)]"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -205,8 +205,10 @@ export default function TradePanel({ bySymbol, selectedSymbol, onSelectPair, onT
         {/* Submit */}
         <button
           onClick={submit}
-          className={`btn-press rounded-md py-3 text-sm font-bold text-white transition-opacity duration-150 hover:opacity-90 ${
-            side === "buy" ? "bg-up" : "bg-down"
+          className={`btn-press w-full rounded-md py-3 text-sm font-bold text-white transition-all duration-300 ease-out hover:scale-[1.015] hover:shadow-[0_6px_24px_rgba(56,189,248,0.25)] hover:brightness-110 hover:-translate-y-0.5 active:scale-[0.98] active:shadow-none active:translate-y-0 active:duration-75 ${
+            side === "buy"
+              ? "bg-up shadow-[0_4px_18px_rgba(52,211,153,0.3)]"
+              : "bg-down shadow-[0_4px_18px_rgba(248,113,113,0.3)]"
           }`}
         >
           {side === "buy" ? `Buy ${coin.symbol}` : `Sell ${coin.symbol}`}

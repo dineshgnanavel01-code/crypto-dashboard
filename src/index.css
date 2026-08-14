@@ -1,0 +1,237 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * VOLTEX — Midnight Precision Deck
+ * Dark trading-terminal theme: near-black navy canvas,
+ * IBM Plex Mono for numerals, Space Grotesk for display,
+ * electric cyan accent, semantic green/red for market direction.
+ * All motion ≤ 300ms, ease-out cubic-bezier(0.23, 1, 0.32, 1).
+ */
+
+
+
+:root {
+  --radius: 0.5rem;
+  --background: oklch(0.17 0.015 250);
+  --foreground: oklch(0.93 0.008 250);
+  --card: oklch(0.215 0.018 250);
+  --card-foreground: oklch(0.93 0.008 250);
+  --popover: oklch(0.215 0.018 250);
+  --popover-foreground: oklch(0.93 0.008 250);
+  --primary: oklch(0.82 0.14 210);
+  --primary-foreground: oklch(0.15 0.02 250);
+  --secondary: oklch(0.26 0.02 250);
+  --secondary-foreground: oklch(0.85 0.01 250);
+  --muted: oklch(0.25 0.018 250);
+  --muted-foreground: oklch(0.66 0.02 250);
+  --accent: oklch(0.28 0.03 210);
+  --accent-foreground: oklch(0.93 0.008 250);
+  --destructive: oklch(0.62 0.21 25);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.82 0.14 210);
+  --chart-1: oklch(0.82 0.14 210);
+  --chart-2: oklch(0.7 0.16 155);
+  --chart-3: oklch(0.62 0.21 25);
+  --chart-4: oklch(0.55 0.03 250);
+  --chart-5: oklch(0.45 0.02 250);
+  --sidebar: oklch(0.19 0.016 250);
+  --sidebar-foreground: oklch(0.93 0.008 250);
+  --sidebar-primary: oklch(0.82 0.14 210);
+  --sidebar-primary-foreground: oklch(0.15 0.02 250);
+  --sidebar-accent: oklch(0.26 0.02 250);
+  --sidebar-accent-foreground: oklch(0.93 0.008 250);
+  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-ring: oklch(0.82 0.14 210);
+  /* semantic market colors */
+  --up: oklch(0.75 0.17 155);
+  --up-dim: oklch(0.75 0.17 155 / 14%);
+  --down: oklch(0.66 0.22 25);
+  --down-dim: oklch(0.66 0.22 25 / 14%);
+}
+
+.dark {
+  --radius: 0.5rem;
+  --background: oklch(0.17 0.015 250);
+  --foreground: oklch(0.93 0.008 250);
+  --card: oklch(0.215 0.018 250);
+  --card-foreground: oklch(0.93 0.008 250);
+  --popover: oklch(0.215 0.018 250);
+  --popover-foreground: oklch(0.93 0.008 250);
+  --primary: oklch(0.82 0.14 210);
+  --primary-foreground: oklch(0.15 0.02 250);
+  --secondary: oklch(0.26 0.02 250);
+  --secondary-foreground: oklch(0.85 0.01 250);
+  --muted: oklch(0.25 0.018 250);
+  --muted-foreground: oklch(0.66 0.02 250);
+  --accent: oklch(0.28 0.03 210);
+  --accent-foreground: oklch(0.93 0.008 250);
+  --destructive: oklch(0.62 0.21 25);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.82 0.14 210);
+  --chart-1: oklch(0.82 0.14 210);
+  --chart-2: oklch(0.7 0.16 155);
+  --chart-3: oklch(0.62 0.21 25);
+  --chart-4: oklch(0.55 0.03 250);
+  --chart-5: oklch(0.45 0.02 250);
+  --sidebar: oklch(0.19 0.016 250);
+  --sidebar-foreground: oklch(0.93 0.008 250);
+  --sidebar-primary: oklch(0.82 0.14 210);
+  --sidebar-primary-foreground: oklch(0.15 0.02 250);
+  --sidebar-accent: oklch(0.26 0.02 250);
+  --sidebar-accent-foreground: oklch(0.93 0.008 250);
+  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-ring: oklch(0.82 0.14 210);
+  --up: oklch(0.75 0.17 155);
+  --up-dim: oklch(0.75 0.17 155 / 14%);
+  --down: oklch(0.66 0.22 25);
+  --down-dim: oklch(0.66 0.22 25 / 14%);
+}
+
+
+
+@layer components {
+  .font-display { font-family: "Space Grotesk", sans-serif; }
+  .font-mono { font-family: "IBM Plex Mono", monospace; }
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .flex {
+    min-height: 0;
+    min-width: 0;
+  }
+
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+
+  /* Uppercase micro-label */
+  .micro-label {
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+    font-weight: 500;
+  }
+
+  /* Active card with faint cyan top glow */
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .panel-active {
+    border-color: oklch(0.82 0.14 210 / 35%);
+    box-shadow: 0 -1px 0 oklch(0.82 0.14 210 / 55%), 0 8px 24px oklch(0 0 0 / 35%);
+  }
+
+  /* Price tick flash */
+  @media (prefers-reduced-motion: no-preference) {
+    .tick-flash-up {
+      animation: tickUp 0.45s var(--ease-out) both;
+    }
+    .tick-flash-down {
+      animation: tickDown 0.45s var(--ease-out) both;
+    }
+    @keyframes tickUp {
+      0% {
+        background-color: var(--up-dim);
+      }
+      100% {
+        background-color: transparent;
+      }
+    }
+    @keyframes tickDown {
+      0% {
+        background-color: var(--down-dim);
+      }
+      100% {
+        background-color: transparent;
+      }
+    }
+    .btn-press:active {
+      transform: scale(0.97);
+      transition: transform 160ms var(--ease-out);
+    }
+  }
+
+  .up-text {
+    color: var(--up);
+  }
+  .down-text {
+    color: var(--down);
+  }
+  .cyan-text {
+    color: var(--primary);
+  }
+
+  /* Ticker tape marquee */
+  @media (prefers-reduced-motion: no-preference) {
+    .ticker-track {
+      animation: tickerScroll 40s linear infinite;
+    }
+    @keyframes tickerScroll {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(-50%);
+      }
+    }
+  }
+
+  @media (min-width: 640px) {
+    .container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+      max-width: 1440px;
+    }
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+    outline-color: color-mix(in oklab, var(--ring) 50%, transparent);
+  }
+  html { color-scheme: dark; }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-variant-numeric: tabular-nums;
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [type="button"]:not(:disabled),
+  [type="submit"]:not(:disabled),
+  [type="reset"]:not(:disabled),
+  a[href],
+  select:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled) {
+    cursor: pointer;
+  }
+}

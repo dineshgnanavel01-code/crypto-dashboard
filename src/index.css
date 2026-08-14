@@ -214,7 +214,14 @@
     border-color: var(--border);
     outline-color: color-mix(in oklab, var(--ring) 50%, transparent);
   }
-  html { color-scheme: dark; }
+  html { color-scheme: dark; scroll-behavior: smooth; }
+  /* Keep the sticky 64px header from covering anchored sections */
+  [id="portfolio"],
+  [id="market"],
+  [id="trade"],
+  [id="history"] {
+    scroll-margin-top: 6.5rem;
+  }
   body {
     background-color: var(--background);
     color: var(--foreground);

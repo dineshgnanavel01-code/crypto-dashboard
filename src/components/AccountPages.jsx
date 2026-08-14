@@ -287,7 +287,7 @@ export function SettingsPage() {
 
   const rows = [
     { icon: FiBell, label: "Push notifications", desc: "Order fills, price moves and alerts", state: notifications, set: setNotifications },
-    { icon: FiTrendingUpIcon, label: "Price alerts", desc: "Notify when a coin crosses your target", state: priceAlerts, set: setPriceAlerts },
+    { icon: FiBell, label: "Price alerts", desc: "Notify when a coin crosses your target", state: priceAlerts, set: setPriceAlerts },
     { icon: FiKey, label: "Two-factor authentication", desc: "Extra security on sign-in", state: twoFA, set: setTwoFA },
   ];
 

@@ -151,6 +151,17 @@ export function SignInPage() {
               Create an account
             </button>
           </div>
+
+          <div className="flex justify-center border-t border-slate-800 pt-4">
+            <button
+              type="button"
+              className={`btn-press inline-flex items-center gap-2 rounded-md border border-slate-700 bg-slate-800/60 px-4 py-2 text-xs font-semibold text-slate-300 ${HOVER}`}
+              onClick={() => navigate("/", { replace: true })}
+            >
+              <FiArrowLeft size={14} />
+              Return to Dinoc dashboard
+            </button>
+          </div>
         </form>
       </div>
 

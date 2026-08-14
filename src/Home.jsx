@@ -136,11 +136,11 @@ export default function Home() {
  */
 
 function TickerTape({ market }) {
-  const rows = (market ?? []).map((m) => {
+  const rows = (market ?? []).flatMap((m) => {
     const c = COINS.find((x) => x.symbol === m.symbol);
     const up = (m.price_change_percentage_24h ?? 0) >= 0;
-    return (
-      <span key={m.symbol} className="flex items-center gap-2 whitespace-nowrap px-5 text-xs">
+    const content = (
+      <span className="flex items-center gap-2 whitespace-nowrap px-5 text-xs">
         <span className="font-semibold">{m.symbol}</span>
         <span className="font-mono text-muted-foreground">${formatPrice(m.current_price)}</span>
         <span className={`font-mono font-medium ${up ? "up-text" : "down-text"}`}>
@@ -148,12 +148,18 @@ function TickerTape({ market }) {
         </span>
       </span>
     );
+    // Duplicate the strip so the marquee scrolls seamlessly; the two passes
+    // must carry distinct keys to keep React happy.
+    return [
+      { ...content, key: `tape-a-${m.symbol}` },
+      { ...content, key: `tape-b-${m.symbol}` },
+    ];
   });
 
   return (
     <div className="overflow-hidden border-b border-border bg-secondary/30 py-1.5" aria-hidden>
       <div className="ticker-track flex w-max items-center">
-        {[...rows, ...rows]}
+        {rows}
       </div>
     </div>
   );

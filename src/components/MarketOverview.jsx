@@ -5,6 +5,7 @@
  * Responsive: table on desktop, stacked cards on mobile.
  */
 
+import { useEffect, useRef } from "react";
 import { FiArrowUpRight, FiArrowDownRight } from "react-icons/fi";
 import { COINS, formatCompact, formatPrice } from "../data/mockData";
 

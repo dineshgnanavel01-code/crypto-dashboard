@@ -6,6 +6,15 @@
  *
  * Style: Midnight Precision Deck — data is the hero, color encodes direction.
  */
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+// How often the front end re-fetches real prices (ms). The public CoinGecko
+// endpoint is rate-limited (~10-30 req/min), so 60s is safe; micro-ticks
+// below fill the gaps with smooth simulated movement.
+const POLL_MS = 60000;
+
+// Speed of the simulated live ticker between API polls (ms).
+const TICK_MS = 1500;
 
 export const COINS = [
   {
@@ -127,7 +136,7 @@ export function generateOrderBook(midPrice, decimals = 2) {
 /** Format helpers with tabular-nums friendly output. */
 export function formatPrice(price) {
   if (price == null || Number.isNaN(price)) return "—";
-  if (price >= 1000) return price.toLocaleString("en-US", { maximumFractionDigits: 2, minimumFractionDigits: 2 });
+  if (price >= 1000) return price.toLocaleString("en-US", { maximumFractionDigits: 2 });
   if (price >= 1) return price.toFixed(2);
   return price.toFixed(4);
 }
@@ -249,7 +258,8 @@ export function useMarketData() {
       const next = base.map((c) => {
         // ±0.08% random walk
         const drift = (Math.random() - 0.5) * 0.0016;
-        return { ...c, current_price: +(c.current_price * (1 + drift)).toFixed(2) };
+        const decimals = c.current_price < 1 ? 6 : 2;
+        return { ...c, current_price: +(c.current_price * (1 + drift)).toFixed(decimals) };
       });
       applyFlashes(base, next);
       baseRef.current = next;

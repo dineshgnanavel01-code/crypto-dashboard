@@ -266,6 +266,7 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
               createPortal(
                 <div
                   className="fixed z-[100] w-52 overflow-hidden rounded-md border border-slate-700 bg-slate-900 shadow-xl"
+                  onMouseDown={(e) => e.stopPropagation()}
                   style={{
                     top: profileRect ? profileRect.bottom + 4 : 0,
                     right: Math.max(8, window.innerWidth - (profileRect ? profileRect.right : 0)),

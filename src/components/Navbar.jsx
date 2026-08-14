@@ -36,7 +36,7 @@ import Logo from "./Logo";
    - active (mouse-down click): shrink slightly + press feedback
    --------------------------------------------------------------- */
 const HOVER = "transition-all duration-200 hover:brightness-125 hover:scale-[1.03] hover:shadow-[0_0_14px_rgba(56,189,248,0.35)] active:scale-[0.95] active:brightness-150 active:duration-75 cursor-pointer";
-const NAV_ITEM = `${HOVER} flex items-center gap-1.5 px-2.5 py-2 rounded-none text-sm text-slate-400 hover:text-white focus-visible:text-white`;
+const NAV_ITEM = `${HOVER} flex items-center gap-1.5 px-3.5 py-2 rounded-none text-sm text-slate-400 hover:text-white focus-visible:text-white`;
 
 export default function Navbar({ bySymbol, onSearchSelect }) {
   const navigate = useNavigate();

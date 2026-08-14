@@ -130,7 +130,7 @@ export function SignInPage() {
           <button
             type="submit"
             disabled={loading}
-            className={`flex h-11 w-full items-center justify-center gap-2 rounded-md bg-primary font-semibold text-slate-950 disabled:opacity-60 ${HOVER}`}
+            className="btn-press flex h-11 w-full items-center justify-center gap-2 rounded-md bg-primary font-bold text-slate-950 shadow-[0_0_24px_rgba(56,189,248,0.35)] transition-all duration-300 ease-out hover:scale-[1.02] hover:brightness-110 hover:shadow-[0_0_32px_rgba(56,189,248,0.5)] active:scale-[0.97] active:duration-75 disabled:opacity-60"
           >
             <FiLogIn size={16} />
             {loading ? "Signing in…" : "Sign in"}

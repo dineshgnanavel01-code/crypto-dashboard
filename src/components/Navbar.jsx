@@ -12,8 +12,7 @@ import { createPortal } from "react-dom";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { toast } from "sonner";
-import {
-  FiSearch,
+import { FiSearch,
   FiBell,
   FiMenu,
   FiX,
@@ -24,6 +23,7 @@ import {
   FiUser,
   FiSettings,
   FiLogOut,
+  FiLogIn,
   FiChevronDown,
 } from "react-icons/fi";
 import { COINS } from "../data/mockData";
@@ -49,6 +49,34 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
   const [pressedNav, setPressedNav] = useState(null);
   const profileRef = useRef(null);
   const notifRef = useRef(null);
+
+  /* Sign In / Sign Out state — demo session persisted in localStorage by
+     the Sign In page so the navbar can show the Sign In button when
+     signed out and the profile chip when signed in. */
+  const [signedIn, setSignedIn] = useState(
+    () => localStorage.getItem("dinoc_signed_in") === "1",
+  );
+
+  useEffect(() => {
+    /* Keep the navbar in sync when the demo sign-in sets the flag in
+       another tab or after navigation away from the Sign In page. */
+    const onChange = () => setSignedIn(localStorage.getItem("dinoc_signed_in") === "1");
+    window.addEventListener("storage", onChange);
+    const timer = setInterval(onChange, 500);
+    return () => {
+      window.removeEventListener("storage", onChange);
+      clearInterval(timer);
+    };
+  }, []);
+
+  function handleSignOut() {
+    setProfileOpen(false);
+    localStorage.removeItem("dinoc_signed_in");
+    setSignedIn(false);
+    toast.success("Signed out", { description: "Opening the Sign In page." });
+    window.scrollTo({ top: 0, behavior: "instant" });
+    navigate("/signin", { replace: true });
+  }
 
   useEffect(() => {
     if (!profileOpen || !profileRef.current) return;
@@ -93,12 +121,7 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
     {
       label: "Sign out",
       icon: FiLogOut,
-      onClick: () => {
-        setProfileOpen(false);
-        toast.success("Signed out", { description: "Opening the Sign In page." });
-        window.scrollTo({ top: 0, behavior: "instant" });
-        navigate("/signin", { replace: true });
-      },
+      onClick: handleSignOut,
     },
   ];
 
@@ -217,7 +240,8 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
             )}
           </div>
 
-          {/* Profile chip — compact, click toggles dropdown via portal */}
+          {signedIn ? (
+          /* Profile chip — compact, click toggles dropdown via portal */
           <div ref={profileRef} className="relative">
             <button
               onClick={() => setProfileOpen((v) => !v)}
@@ -266,6 +290,16 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
                 document.body,
               )}
           </div>
+          ) : (
+          /* Sign In button — visible when no demo session exists */
+          <Link
+            to="/signin"
+            className={`flex h-9 items-center gap-2 rounded-md border border-slate-700 bg-slate-900 px-3.5 text-sm font-semibold text-slate-300 hover:border-primary/60 hover:bg-slate-800 hover:text-white hover:shadow-[0_0_14px_rgba(56,189,248,0.25)] active:scale-[0.95] active:bg-slate-700 ${HOVER}`}
+          >
+            <FiLogIn size={15} />
+            Sign in
+          </Link>
+          )}
 
           {/* Mobile menu toggle */}
           <button
@@ -304,6 +338,16 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
                 {n.label}
               </Link>
             ))}
+            <Link
+              to={signedIn ? "/profile" : "/signin"}
+              onClick={() => setMobileOpen(false)}
+              className={`flex items-center gap-2.5 rounded-md px-3 py-2.5 text-sm transition-colors hover:bg-slate-800 active:bg-slate-700 ${
+                signedIn ? "text-slate-400 hover:text-white" : "font-semibold text-primary"
+              } ${HOVER}`}
+            >
+              {signedIn ? <FiUser size={15} /> : <FiLogIn size={15} />}
+              {signedIn ? "Profile" : "Sign in"}
+            </Link>
           </div>
         </div>
       )}

@@ -1,6 +1,6 @@
 /**
  * Dinoc Currency — data/mockData.js
- * Static mock data layer (per assignment spec: no backend / real API required).
+ * Fully static mock data layer (no backend / real API — per assignment spec).
  * Provides market data, holdings, transactions, and order-book generators,
  * plus a tick simulator that makes prices increase/decrease live in the
  * front end every 1.5 seconds with green/red flash indicators.
@@ -12,7 +12,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 // Speed of the simulated live ticker (ms). Prices move every 1.5s.
 const TICK_MS = 1500;
 
-/** Static coin registry (sample cryptocurrencies from the spec). */
+/** Static coin registry (sample cryptocurrencies). */
 export const COINS = [
   {
     id: "bitcoin",
@@ -103,16 +103,14 @@ export const MOCK_TRANSACTIONS = [
   { id: "TX-8A21F8", symbol: "BTC", type: "SELL", amount: 0.02, price: 64102.88, status: "failed", time: "2026-08-12 22:14" },
 ];
 
-/** Static mock price history (daily close, last 30 points) — sample data. */
+/** Static mock price history (hourly close, last 24 points) — sample data, no API. */
 export const MOCK_HISTORY = (() => {
   const pts = [];
   let p = 61200;
-  const now = Date.now();
-  const day = 86400000;
-  const seed = [1.02, -0.8, 1.4, -1.2, 2.1, -0.4, 0.9, 1.6, -2.0, 0.6, 1.8, -0.7, 1.1, -1.5, 2.4, -0.3, 0.8, 1.2, -1.8, 1.5, 0.4, -0.9, 1.9, -0.5, 1.3, -1.1, 0.7, -1.6, 2.2, -0.6];
+  const seed = [1.02, -0.8, 1.4, -1.2, 2.1, -0.4, 0.9, 1.6, -2.0, 0.6, 1.8, -0.7, 1.1, -1.5, 2.4, -0.3, 0.8, 1.2, -1.8, 1.5, 0.4, -0.9, 1.9, -0.5];
   for (let i = 0; i < seed.length; i++) {
     p += seed[i] * 90;
-    pts.push({ time: now - (seed.length - i) * day, close: p });
+    pts.push({ time: i, close: p });
   }
   return pts;
 })();
@@ -135,7 +133,7 @@ export function generateOrderBook(midPrice, decimals = 2) {
 /** Format helpers with tabular-nums friendly output. */
 export function formatPrice(price) {
   if (price == null || Number.isNaN(price)) return "—";
-  if (price >= 1000) return price.toLocaleString("en-US", { maximumFractionDigits: 2 });
+  if (price >= 1000) return price.toLocaleString("en-US", { maximumFractionDigits: 2, minimumFractionDigits: 2 });
   if (price >= 1) return price.toFixed(2);
   return price.toFixed(4);
 }

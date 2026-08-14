@@ -68,6 +68,9 @@ export function SignInPage() {
     // Demo only — no backend; any credentials "sign in" instantly.
     setTimeout(() => {
       setLoading(false);
+      // Demo session persisted in localStorage so the navbar can switch between
+      // the Sign In button and the profile chip on every page.
+      localStorage.setItem("dinoc_signed_in", "1");
       toast.success("Welcome back!", { description: "Demo sign-in — no real session was created." });
       navigate("/");
     }, 700);

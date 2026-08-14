@@ -72,7 +72,12 @@ export function SignInPage() {
       // the Sign In button and the profile chip on every page.
       localStorage.setItem("dinoc_signed_in", "1");
       toast.success("Welcome back!", { description: "Demo sign-in — no real session was created." });
-      navigate("/");
+      // Go back to the previous page (dashboard or last visited page); fallback to /signin's referer-safe dashboard "/"
+      if (window.history.length > 1) {
+        navigate(-1);
+      } else {
+        navigate("/");
+      }
     }, 700);
   }
 

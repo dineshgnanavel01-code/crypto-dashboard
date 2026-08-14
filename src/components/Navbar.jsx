@@ -73,11 +73,14 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
 
   const showDropdown = searchFocused && query.trim().length > 0;
 
+  /* Custom landing offsets per section — Portfolio and History land lower so
+     the content BELOW each section card (Market table, Transactions) is
+     visible right after the click, instead of the card top hugging the nav. */
   const nav = [
-    { label: "Market", icon: FiTrendingUp, href: "#market" },
-    { label: "Portfolio", icon: FiBriefcase, href: "#portfolio" },
-    { label: "Trade", icon: FiActivity, href: "#trade" },
-    { label: "History", icon: FiList, href: "#history" },
+    { label: "Market", icon: FiTrendingUp, href: "#market", offset: 88 },
+    { label: "Portfolio", icon: FiBriefcase, href: "#portfolio", offset: 140 },
+    { label: "Trade", icon: FiActivity, href: "#trade", offset: 88 },
+    { label: "History", icon: FiList, href: "#history", offset: 160 },
   ];
 
   const profileItems = [
@@ -108,13 +111,24 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
           <Logo />
         </div>
 
-        {/* Desktop nav — plain icon+text, hover turns white/cyan, click presses */}
+        {/* Desktop nav — plain icon+text, hover turns white/cyan, click presses.
+            Click scrolls to the section with a custom offset so the content
+            below each section lands just under the sticky navbar. */}
         <nav className="hidden md:flex items-center gap-1">
           {nav.map((n) => (
             <a
               key={n.label}
               href={n.href}
               className={NAV_ITEM}
+              onClick={(e) => {
+                e.preventDefault();
+                const el = document.querySelector(n.href);
+                if (el) {
+                  const top = el.getBoundingClientRect().top + window.scrollY - n.offset;
+                  window.scrollTo({ top, behavior: "smooth" });
+                  window.history.replaceState(null, "", n.href);
+                }
+              }}
               onMouseDown={() => setPressedNav(n.label)}
               onMouseUp={() => setPressedNav(null)}
               onMouseLeave={() => setPressedNav(null)}
@@ -289,7 +303,14 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
               <a
                 key={n.label}
                 href={n.href}
-                onClick={() => setMobileOpen(false)}
+                onClick={(e) => {
+                  setMobileOpen(false);
+                  const el = document.querySelector(n.href);
+                  if (el) {
+                    const top = el.getBoundingClientRect().top + window.scrollY - n.offset;
+                    window.scrollTo({ top, behavior: "smooth" });
+                  }
+                }}
                 className={`flex items-center gap-2.5 rounded-md px-3 py-2.5 text-sm text-slate-400 hover:text-white transition-colors hover:bg-slate-800 active:bg-slate-700 ${HOVER}`}
               >
                 <n.icon size={15} />

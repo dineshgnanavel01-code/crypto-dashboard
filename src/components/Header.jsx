@@ -8,6 +8,7 @@
  * Style: Midnight Precision Deck — dark navy, mono numerals, cyan accent.
  */
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { toast } from "sonner";
 import {
@@ -32,8 +33,13 @@ export default function Header({ bySymbol, onSearchSelect }) {
   const [searchFocused, setSearchFocused] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [profileRect, setProfileRect] = useState(null);
   const profileRef = useRef(null);
-  
+
+  useEffect(() => {
+    if (!profileOpen || !profileRef.current) return;
+    setProfileRect(profileRef.current.getBoundingClientRect());
+  }, [profileOpen]);
 
   useEffect(() => {
     function onDocClick(e) {
@@ -87,7 +93,7 @@ export default function Header({ bySymbol, onSearchSelect }) {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/92 backdrop-blur-md">
-      <div className="container flex h-16 items-center justify-between gap-4">
+      <div className="relative mx-auto flex h-16 max-w-[1440px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Logo />
 
@@ -168,7 +174,7 @@ export default function Header({ bySymbol, onSearchSelect }) {
               <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-up" />
             </button>
             {notifOpen && (
-              <div className="absolute right-0 top-full mt-1 w-64 overflow-hidden rounded-md border border-border bg-popover shadow-xl">
+              <div className="absolute right-0 top-full z-[60] mt-1 w-64 overflow-hidden rounded-md border border-border bg-popover shadow-xl" style={{ maxWidth: "calc(100vw - 1rem)" }}>
                 <div className="border-b border-border px-3 py-2 text-xs uppercase tracking-wider text-muted-foreground">
                   Notifications
                 </div>
@@ -204,8 +210,16 @@ export default function Header({ bySymbol, onSearchSelect }) {
                 <div className="font-mono text-[10px] text-muted-foreground">Verified</div>
               </div>
             </button>
-            {profileOpen && (
-              <div className="absolute right-0 top-full mt-1 w-52 overflow-hidden rounded-md border border-border bg-popover shadow-xl">
+            {profileOpen &&
+              createPortal(
+                <div
+                  className="fixed z-[100] w-52 overflow-hidden rounded-md border border-border bg-popover shadow-xl"
+                  style={{
+                    top: profileRect ? profileRect.bottom + 4 : 0,
+                    right: Math.max(8, window.innerWidth - (profileRect ? profileRect.right : 0)),
+                    maxWidth: "calc(100vw - 1rem)",
+                  }}
+                >
                 <div className="border-b border-border px-3 py-2.5">
                   <div className="text-sm font-semibold">Dinoc</div>
                   <div className="font-mono text-[10px] text-muted-foreground">
@@ -218,6 +232,7 @@ export default function Header({ bySymbol, onSearchSelect }) {
                     onClick={() => (item.href ? setProfileOpen(false) : item.onClick())}
                     className="flex w-full items-center gap-2.5 px-3 py-2.5 text-sm text-foreground transition-colors hover:bg-accent"
                   >
+
                     {item.href ? (
                       <a href={item.href} className="flex w-full items-center gap-2.5">
                         <item.icon size={15} className="text-muted-foreground" />
@@ -231,8 +246,9 @@ export default function Header({ bySymbol, onSearchSelect }) {
                     )}
                   </button>
                 ))}
-              </div>
-            )}
+              </div>,
+                document.body,
+              )}
           </div>
 
           {/* Mobile menu toggle */}

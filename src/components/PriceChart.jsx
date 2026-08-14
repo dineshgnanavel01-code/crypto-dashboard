@@ -147,7 +147,7 @@ export default function PriceChart({ bySymbol, selectedSymbol }) {
             <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
             <XAxis
               dataKey="label"
-              tick={{ fill: "var(--muted-foreground)", fontSize: 10, fontFamily: "IBM Plex Mono" }}
+              tick={{ fill: "#e2e8f0", fontSize: 10, fontFamily: "IBM Plex Mono" }}
               axisLine={{ stroke: "var(--border)" }}
               tickLine={false}
               minTickGap={48}
@@ -161,7 +161,7 @@ export default function PriceChart({ bySymbol, selectedSymbol }) {
                 fontSize: 12,
                 fontFamily: "IBM Plex Mono",
               }}
-              labelStyle={{ color: "var(--muted-foreground)", fontFamily: "IBM Plex Sans" }}
+              labelStyle={{ color: "#ffffff", fontFamily: "IBM Plex Sans" }}
               formatter={(v) => [`$${formatPrice(v)}`, "Price"]}
             />
             <Area

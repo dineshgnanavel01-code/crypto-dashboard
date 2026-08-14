@@ -46,7 +46,7 @@ export default function Transactions({ transactions }) {
                 <td className="px-2 py-2.5">
                   <StatusBadge status={tx.status} />
                 </td>
-                <td className="px-2 py-2.5 font-mono text-xs text-slate-400">{tx.time}</td>
+                <td className="px-2 py-2.5 font-mono text-xs text-white">{tx.time}</td>
               </tr>
             ))}
           </tbody>
@@ -66,7 +66,7 @@ export default function Transactions({ transactions }) {
                 <span className={tx.type === "BUY" ? "up-text" : "down-text"}>{tx.type}</span>{" "}
                 {tx.symbol}
               </span>
-              <span className="font-mono text-xs text-slate-400">{tx.time}</span>
+              <span className="font-mono text-xs text-white">{tx.time}</span>
             </div>
             <div className="mt-1 flex items-center justify-between font-mono text-xs">
               <span>{tx.amount} {tx.symbol}</span>

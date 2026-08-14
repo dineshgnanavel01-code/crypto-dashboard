@@ -240,8 +240,8 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
             )}
           </div>
 
-          {signedIn ? (
-          /* Profile chip — compact, click toggles dropdown via portal */
+          {/* Profile chip — always visible (per user request: no Sign in button,
+              only the DC profile icon with Profile / Settings / Sign out) */}
           <div ref={profileRef} className="relative">
             <button
               onClick={() => setProfileOpen((v) => !v)}
@@ -290,16 +290,6 @@ export default function Navbar({ bySymbol, onSearchSelect }) {
                 document.body,
               )}
           </div>
-          ) : (
-          /* Sign In button — visible when no demo session exists */
-          <Link
-            to="/signin"
-            className={`flex h-9 items-center gap-2 rounded-md border border-slate-700 bg-slate-900 px-3.5 text-sm font-semibold text-slate-300 hover:border-primary/60 hover:bg-slate-800 hover:text-white hover:shadow-[0_0_14px_rgba(56,189,248,0.25)] active:scale-[0.95] active:bg-slate-700 ${HOVER}`}
-          >
-            <FiLogIn size={15} />
-            Sign in
-          </Link>
-          )}
 
           {/* Mobile menu toggle */}
           <button

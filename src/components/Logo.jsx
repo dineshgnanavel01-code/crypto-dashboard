@@ -12,7 +12,7 @@ export default function Logo({ className = "" }) {
         </svg>
       </span>
       <span className="font-display text-xl font-bold tracking-tight">
-        VOL<span className="cyan-text">TEX</span>
+        DIN<span className="cyan-text">OC</span>
       </span>
     </a>
   );

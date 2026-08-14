@@ -8,16 +8,14 @@
  */
 import { useMemo, useState } from "react";
 import { FiZap } from "react-icons/fi";
-import Header from "../components/Header";
-import TickerTape from "../components/TickerTape";
-import MarketOverview from "../components/MarketOverview";
-import TradePanel from "../components/TradePanel";
-import PriceChart from "../components/PriceChart";
-import OrderBook from "../components/OrderBook";
-import Transactions from "../components/Transactions";
-import Portfolio from "../components/Portfolio";
-import { useMarketData } from "../hooks/useMarketData";
-import { MOCK_TRANSACTIONS } from "../data/mockData";
+import Header from "./components/Header";
+import MarketOverview from "./components/MarketOverview";
+import TradePanel from "./components/TradePanel";
+import PriceChart from "./components/PriceChart";
+import OrderBook from "./components/OrderBook";
+import Transactions from "./components/Transactions";
+import Portfolio from "./components/Portfolio";
+import { useMarketData, MOCK_TRANSACTIONS, COINS, formatPrice, formatPct } from "./data/mockData";
 
 export default function Home() {
   const { market, bySymbol, live, loading, flashes } = useMarketData();
@@ -55,7 +53,7 @@ export default function Home() {
         <div className="mb-5 flex flex-wrap items-center gap-3">
           <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <FiZap size={13} className="cyan-text" />
-            Voltex Terminal
+            Dinoc Currency
           </span>
           <span className="text-xs text-muted-foreground">·</span>
           <span className="flex items-center gap-1.5 text-xs">
@@ -81,7 +79,7 @@ export default function Home() {
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-[280px_1fr_320px]">
           {/* Left rail */}
           <div className="order-2 flex flex-col gap-4 xl:order-1">
-            <Portfolio bySymbol={bySymbol} />
+            <div id="portfolio"><Portfolio bySymbol={bySymbol} /></div>
             <MarketOverview
               market={market}
               flashes={flashes}
@@ -92,30 +90,60 @@ export default function Home() {
 
           {/* Center: chart */}
           <div className="order-1 xl:order-2">
-            <PriceChart bySymbol={bySymbol} selectedSymbol={selectedSymbol} />
+            <div id="market"><PriceChart bySymbol={bySymbol} selectedSymbol={selectedSymbol} /></div>
             <div className="mt-4">
-              <Transactions transactions={transactions} />
+              <div id="history"><Transactions transactions={transactions} /></div>
             </div>
           </div>
 
           {/* Right column */}
           <div className="order-3 flex flex-col gap-4">
-            <TradePanel
+            <div id="trade"><TradePanel
               bySymbol={bySymbol}
               selectedSymbol={selectedSymbol}
               onSelectPair={(s) => setSelectedSymbol(s)}
               onTrade={handleTrade}
-            />
+            /></div>
             <OrderBook bySymbol={bySymbol} selectedSymbol={selectedSymbol} />
           </div>
         </div>
 
         <footer className="mt-10 border-t border-border pt-4 pb-8 text-center text-[11px] text-muted-foreground">
-          Voltex Terminal · Market data via CoinGecko public API · Prices refresh every 15s with live micro-ticks ·
+          Dinoc Currency · Market data via CoinGecko public API · Prices refresh every 15s with live micro-ticks ·
           Simulated trading for demonstration — not financial advice.
         </footer>
       </main>
 
+    </div>
+  );
+}
+
+/**
+ * VOLTEX — TickerTape
+ * Scrolling marquee of live prices beneath the header — a signature
+ * terminal element that confirms the tape is alive at a glance.
+ */
+
+function TickerTape({ market }) {
+  const rows = (market ?? []).map((m) => {
+    const c = COINS.find((x) => x.symbol === m.symbol);
+    const up = (m.price_change_percentage_24h ?? 0) >= 0;
+    return (
+      <span key={m.symbol} className="flex items-center gap-2 whitespace-nowrap px-5 text-xs">
+        <span className="font-semibold">{m.symbol}</span>
+        <span className="font-mono text-muted-foreground">${formatPrice(m.current_price)}</span>
+        <span className={`font-mono font-medium ${up ? "up-text" : "down-text"}`}>
+          {formatPct(m.price_change_percentage_24h ?? 0)}
+        </span>
+      </span>
+    );
+  });
+
+  return (
+    <div className="overflow-hidden border-b border-border bg-secondary/30 py-1.5" aria-hidden>
+      <div className="ticker-track flex w-max items-center">
+        {[...rows, ...rows]}
+      </div>
     </div>
   );
 }

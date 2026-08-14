@@ -2,13 +2,13 @@
  * VOLTEX — Header
  * Dark terminal header: Voltex wordmark + cyan tick logo, nav with real
  * page routes (Market / Portfolio / Trade / History), live coin search,
- * notification bell with unread dot, JD profile dropdown, responsive
+ * notification bell with unread dot, Dinoc profile dropdown, responsive
  * mobile menu.
  *
  * Style: Midnight Precision Deck — dark navy, mono numerals, cyan accent.
  */
 import { useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "wouter";
+
 import { toast } from "sonner";
 import {
   FiSearch,
@@ -33,7 +33,7 @@ export default function Header({ bySymbol, onSearchSelect }) {
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef(null);
-  const [location] = useLocation();
+  
 
   useEffect(() => {
     function onDocClick(e) {
@@ -57,16 +57,16 @@ export default function Header({ bySymbol, onSearchSelect }) {
   const showDropdown = searchFocused && query.trim().length > 0;
 
   const nav = [
-    { label: "Market", icon: FiTrendingUp, href: "/markets" },
-    { label: "Portfolio", icon: FiBriefcase, href: "/portfolio" },
-    { label: "Trade", icon: FiActivity, href: "/trade" },
-    { label: "History", icon: FiList, href: "/history" },
+    { label: "Market", icon: FiTrendingUp, href: "#market" },
+    { label: "Portfolio", icon: FiBriefcase, href: "#portfolio" },
+    { label: "Trade", icon: FiActivity, href: "#trade" },
+    { label: "History", icon: FiList, href: "#history" },
   ];
 
-  const isActive = (href) => location === href || location.startsWith(href + "/");
+  const isActive = (href) => false;
 
   const profileItems = [
-    { label: "Profile", icon: FiUser, href: "/profile" },
+    { label: "Profile", icon: FiUser, onClick: () => alert("Profile view coming soon") },
     {
       label: "Settings",
       icon: FiSettings,
@@ -96,7 +96,7 @@ export default function Header({ bySymbol, onSearchSelect }) {
           {nav.map((n) => {
             const active = isActive(n.href);
             return (
-              <Link
+              <a
                 key={n.label}
                 href={n.href}
                 className={`btn-press flex items-center gap-2 rounded-md px-3.5 py-2 text-sm transition-colors duration-150 ${
@@ -107,7 +107,7 @@ export default function Header({ bySymbol, onSearchSelect }) {
               >
                 <n.icon size={15} />
                 {n.label}
-              </Link>
+              </a>
             );
           })}
         </nav>
@@ -135,9 +135,9 @@ export default function Header({ bySymbol, onSearchSelect }) {
                   <div className="px-3 py-2 text-xs text-muted-foreground">No coins found</div>
                 ) : (
                   filtered.map((c) => (
-                    <Link
+                    <a
                       key={c.symbol}
-                      href={`/markets/${c.id}`}
+                      href={`#${c.id}`}
                       onMouseDown={() => setQuery("")}
                       className="flex w-full items-center justify-between px-3 py-2 text-sm hover:bg-accent"
                     >
@@ -150,7 +150,7 @@ export default function Header({ bySymbol, onSearchSelect }) {
                           ${bySymbol[c.symbol].current_price?.toLocaleString()}
                         </span>
                       )}
-                    </Link>
+                    </a>
                   ))
                 )}
               </div>
@@ -197,17 +197,17 @@ export default function Header({ bySymbol, onSearchSelect }) {
               aria-expanded={profileOpen}
             >
               <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/15 text-primary">
-                <span className="font-display text-xs font-bold">JD</span>
+                <span className="font-display text-xs font-bold">DC</span>
               </div>
               <div className="hidden sm:block leading-tight text-left">
-                <div className="text-xs font-semibold">J. Doe</div>
+                <div className="text-xs font-semibold">Dinoc</div>
                 <div className="font-mono text-[10px] text-muted-foreground">Verified</div>
               </div>
             </button>
             {profileOpen && (
               <div className="absolute right-0 top-full mt-1 w-52 overflow-hidden rounded-md border border-border bg-popover shadow-xl">
                 <div className="border-b border-border px-3 py-2.5">
-                  <div className="text-sm font-semibold">J. Doe</div>
+                  <div className="text-sm font-semibold">Dinoc</div>
                   <div className="font-mono text-[10px] text-muted-foreground">
                     j.doe@voltex.io · Verified
                   </div>
@@ -219,10 +219,10 @@ export default function Header({ bySymbol, onSearchSelect }) {
                     className="flex w-full items-center gap-2.5 px-3 py-2.5 text-sm text-foreground transition-colors hover:bg-accent"
                   >
                     {item.href ? (
-                      <Link href={item.href} className="flex w-full items-center gap-2.5">
+                      <a href={item.href} className="flex w-full items-center gap-2.5">
                         <item.icon size={15} className="text-muted-foreground" />
                         {item.label}
-                      </Link>
+                      </a>
                     ) : (
                       <>
                         <item.icon size={15} className="text-muted-foreground" />
@@ -258,7 +258,7 @@ export default function Header({ bySymbol, onSearchSelect }) {
               aria-label="Search cryptocurrency"
             />
             {nav.map((n) => (
-              <Link
+              <a
                 key={n.label}
                 href={n.href}
                 onClick={() => setMobileOpen(false)}
@@ -270,7 +270,7 @@ export default function Header({ bySymbol, onSearchSelect }) {
               >
                 <n.icon size={15} />
                 {n.label}
-              </Link>
+              </a>
             ))}
           </div>
         </div>

@@ -8,7 +8,7 @@
  */
 import { useMemo, useState } from "react";
 import { FiZap } from "react-icons/fi";
-import Header from "./components/Header";
+import Navbar from "./components/Navbar";
 import MarketOverview from "./components/MarketOverview";
 import TradePanel from "./components/TradePanel";
 import PriceChart from "./components/PriceChart";
@@ -51,7 +51,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      <Header bySymbol={bySymbol} onSearchSelect={(s) => setSelectedSymbol(s)} />
+      <Navbar bySymbol={bySymbol} onSearchSelect={(s) => setSelectedSymbol(s)} />
       <TickerTape market={market} />
 
       <main className="container py-6">
